@@ -13,8 +13,6 @@
     {
         static void Main(string[] args)
         {
-            var logger = new NullLogger();
-//            using (var bus = RabbitHutch.CreateBus("host=localhost", x => x.Register<IEasyNetQLogger>(_ => logger)))
             using (var bus = RabbitHutch.CreateBus("host=localhost"))
             {
                 bus.Subscribe<HelloMessage>("moo", m => Console.WriteLine("Hello1-1 {0}", m.Name));
@@ -28,7 +26,7 @@
             }
         }
 
-        // This hangs
+        // This hangs - it publishes the first, then hangs trying to publish the 2nd
         private static async void DoStuff(IBus bus)
         {
             var message = new HelloMessage { Name = "Bob" };
@@ -41,7 +39,7 @@
             }
         }
 
-        // This works
+        // This works fine
         private static void DoMoreStuff(IBus bus)
         {
             var message = new HelloMessage { Name = "Bob" };
